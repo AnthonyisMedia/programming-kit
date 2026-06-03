@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="device-width, initial-scale=1.0">
+    <title>Progamming Kit</title>
+
+    <!--FAVICONS-->
+    <link rel="icon" type="image/x-icon" href="/style/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/style/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="style/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="style/favicon-180x180.png">
+
+    <style>
+        :root {
+            --media-transition-speed: 300ms;
+        }
+
+        body {
+            margin: 0;
+            font-family: Roboto, Arial;
+            background: #111;
+            color: #fff;
+            height: 100vh !important;
+        }
+
+        h2 {
+            font-size: 36px;
+        }
+
+        p {
+            font-size: 26px;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+        }
+
+        /* Scrollbars */
+
+        .app-area-container,
+        .sidebar {
+            overflow-y: scroll;
+            scrollbar-width: auto;
+            scrollbar-color: rgba(49, 49, 49, 0.5) transparent;
+            scroll-behavior: smooth;
+        }
+
+        .app-area-container::-webkit-scrollbar,
+        .sidebar::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        .app-area-container::-webkit-scrollbar-track,
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-area-container::-webkit-scrollbar-track:hover,
+        .sidebar::-webkit-scrollbar-track:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .app-area-container::-webkit-scrollbar-thumb:hover,
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .app-area-container::-webkit-scrollbar-thumb:active,
+        .sidebar::-webkit-scrollbar-thumb:active {
+            background: rgba(0, 0, 0, 1);
+        }
+
+        .app-area-container::-webkit-scrollbar-button,
+        .sidebar::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        .app-area-container::-webkit-scrollbar-corner,
+        .sidebar::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* App Area */
+        #appArea {
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .app-area-container {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .section {
+            margin-bottom: 70px;
+        }
+
+        .section h2 {
+            margin: 10px 0 24px 0;
+            padding-left: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 14px;
+        }
+
+        /* CARD -----------------------*/
+        .card {
+            background: #212121;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #333;
+        }
+
+        .card h3 {
+            font-size: 24px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        /* App Page -----------------------*/
+
+        #appPage {
+            position: fixed;
+            z-index: 10000;
+            display: none;
+            background-color: black;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 180ms ease-in-out, transform 180ms ease-in-out;
+            display: block !important;
+            pointer-events: none;
+        }
+
+        #appPage.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        #page-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            background-color: #111111;
+        }
+
+        #pageTitle {
+            font-size: 50px;
+        }
+
+        .showcase {
+            width: 70%;
+            height: 100%;
+            max-height: 100vh;
+            align-content: center;
+            padding: 20px 3%;
+            box-sizing: border-box;
+
+        }
+
+        .showcase-inner {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            align-content: center;
+        }
+
+        .media-container {
+            height: auto;
+            max-height: 675px;
+        }
+
+        #pageMedia {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            margin-bottom: 30px;
+            opacity: 1;
+            transition: opacity var(--media-transition-speed) ease-in-out;
+            text-align: center;
+            justify-content: center;
+            align-content: center;
+        }
+
+        #pageMedia * {
+            max-width: 100%;
+            max-height: 675px;
+            margin: 0 auto;
+        }
+
+        #pageMedia.fade {
+            opacity: 0;
+        }
+
+        #pageThumbnails {
+            display: flex;
+            width: 100%;
+        }
+
+        #pageThumbnails img {
+            max-height: 150px;
+            padding: 0 10px;
+            cursor: pointer;
+            max-width: 100%;
+            height: auto;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            box-sizing: border-box;
+            background-color: rgb(0, 0, 0);
+            width: 30%;
+            padding: 30px;
+            display: flex;
+            overflow-y: auto;
+
+        }
+
+        .sidebar-inner {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #326dc5;
+            padding: 4px 12px;
+            margin: 6px;
+            border-radius: 50px;
+            font-size: 22px;
+        }
+
+        .tag-alt {
+            margin: 8px 0;
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        #pageHardware {
+            /* display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;*/
+        }
+
+        #backButton {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            z-index: 10000;
+            display: flex;
+            cursor: pointer;
+        }
+
+        #backButton img {
+            width: 50px;
+            aspect-ratio: 1 / 1;
+        }
+
+        #backButton img:hover {
+            transform: scale(1.05);
+        }
+
+        .app-icon {
+            width: 30px;
+            aspect-ratio: 1 / 1;
+            background-color: white;
+        }
+
+        .os-logo {
+            width: 30px;
+            aspect-ratio: 1 / 1;
+            margin-right: 6px;
+        }
+
+        .app-cell {
+            display: flex;
+            align-items: center;
+            margin: 10px 10px;
+            font-size: 22px;
+        }
+
+        .app-cell>div {
+            margin-right: 10px;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .icon {
+            background-color: currentColor;
+            mask: var(--icon) no-repeat center / contain;
+            -webkit-mask: var(--icon) no-repeat center / contain;
+            color: white;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .fluidMedia16x9 * {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .fluidMedia16x9 {
+            position: relative;
+            padding-bottom: 56.25%;
+            /* proportion value to aspect ratio 16:9 (9 / 16 = 0.5625 or 56.25%) */
+            height: 0;
+            overflow: hidden;
+            background-color: black;
+            background-size: contain;
+            background-repeat: no-repeat;
+            box-sizing: border-box;
+        }
+
+        .show {
+            display: block !important;
+        }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-aspect-ratio: 3/2) {
+            .showcase {
+                width: 65%;
+            }
+
+            .sidebar {
+                width: 35%;
+            }
+        }
+
+        @media (max-aspect-ratio: 1/1) {
+
+            #page-container {
+                flex-direction: column;
+                overflow-y: scroll;
+            }
+
+            .showcase {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            #pageMedia {
+                height: auto;
+                margin-bottom: 0px;
+            }
+
+            .sidebar {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                overflow: visible;
+                height: auto;
+            }
+
+            #backButton {
+                position: relative;
+                display: block;
+                top: 0px;
+                left: auto;
+                margin: 20px 15px;
+            }
+
+            #backButton img {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="appPage">
+        <div id="page-container">
+            <div id="backButton">
+                <button onclick="closeAppPage()">
+                    <!--<div alt="Back" class="icon" style="--icon:url('./style/icon-chevron-left.svg')"></div>-->
+                    <img alt="Back" class="" src="./style/icon-chevron-left.svg">
+                </button>
+            </div>
+            <div class="showcase">
+                <div class="showcase-inner">
+                    <div class="media-container">
+                        <div id="pageMedia"></div>
+                    </div>
+                    <div id="pageThumbnails" class="row" style="margin-top: 30px; justify-content: center;"></div>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="sidebar-inner">
+                    <h2><span id="pageTitle">Title</span></h2>
+                    <p id="pageDescription"></p>
+                    <h2>Explores</h2>
+                    <div id="pageSkills"></div>
+                    <h2>Equipment</h2>
+                    <div id="pageHardware"></div>
+                    <h2 style="margin-top: auto;">Free Software</h2>
+                    <div class="row">
+                        <div class="app-container" style="flex: 0 0 50%;">
+                            <div class="app-cell">
+                                <!--<div alt="Windows logo" class="icon app-icon" style="--icon:url('./style/logo-windows.svg')"></div><span id="pageWindowsApp"></span>-->
+                                <img src="./style/logo-windows.svg" alt="Windows logo" class="os-logo"><span id="pageWindowsApp"></span>
+                            </div>
+                            <div class="app-cell">
+                                <!--<div alt="Website logo" class="icon app-icon" style="--icon:url('./style/logo-website.svg')"></div><span id="pageWebsiteApp"></span>-->
+                                <img src="./style/logo-website.svg" alt="Website logo" class="os-logo"><span id="pageWebsiteApp"></span>
+                            </div>
+                        </div>
+                        <div class="app-container" style="flex: 0 0 50%;">
+                            <div class="app-cell">
+                                <!--<div alt="AppleOS logo" class="icon app-icon" style="--icon:url('./style/logo-apple.svg')"></div><span id="pageAppleOSApp"></span>-->
+                                <img src="./style/logo-apple.svg" alt="Windows logo" class="os-logo"><span id="pageAppleOSApp"></span>
+                            </div>
+                            <div class="app-cell">
+                                <!--<div alt="Android logo" class="icon app-icon" style="--icon:url('./style/logo-android.svg')"></div><span id="pageAndroidApp"></span>-->
+                                <img src="./style/logo-android.svg" alt="Android logo" class="os-logo"><span id="pageAndroidApp"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOME SCREEN -->
+    <div class="app-area-container">
+        <div id="appArea"></div>
+    </div>
+
+    <script>
+
+        var DATA = [
+           
+        // ART & GRAPHIC DESIGN ============================================================
+            {
+                title: "Digital Painting",
+                section: "Art & Graphic Design",
+                thumbnail: "./media/art-graphic-design/art-holiday-card.png",
+                description: "Create illustrations and art digitally.",
+                skills: ["Illustration", "Painting", "Art Styles"],
+                hardware: [["Tablet", "Stylus"], ["PC", "Pen Display"]],
+                media: [
+                    { thumb: "./media/art-graphic-design/art-holiday-card.png", content: "<img src='./media/art-graphic-design/art-holiday-card.png'>" },
+                    { thumb: "./media/animation/2d-rigging-set.png", content: "<img src='./media/animation/2d-rigging-set.png'>" },
+                ],
+                windowsApp: "Krita, Affinity",
+                websiteApp: "Kleki, Photopea",
+                appleOSApp: "Sketchbook",
+                androidApp: "Krita"
+            },
+            {
+                title: "Posters and Printables",
+                section: "Art & Graphic Design",
+                thumbnail: "./media/art-graphic-design/graphic-design-poster.jpg",
+                description: "Design posters and other printable materials.",
+                skills: ["Graphic Design"],
+                hardware: [["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/art-graphic-design/graphic-design-poster-demo.png", content: "<video muted autoplay controls><source src='./media/art-graphic-design/graphic-design-poster-demo.mp4' type='video/mp4'></video>" },
+                    { thumb: "./media/art-graphic-design/graphic-design-poster.jpg", content: "<img src='media/art-graphic-design/graphic-design-poster.jpg'>" },
+                ],
+                windowsApp: "Affinity, Figma",
+                websiteApp: "Canva, Figma",
+                appleOSApp: "Affinity, Figma",
+                androidApp: "Krita"
+            },
+            {
+                title: "Pixel Art",
+                section: "Art & Graphic Design",
+                thumbnail: "./media/art-graphic-design/pixel-art-demo.png",
+                description: "Create low resolution pixel art.",
+                skills: ["Grids", "Image Resolution", "Pixel Art Techniques"],
+                hardware: [["Grid Paper", "Pencil", "Scanner"], ["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/art-graphic-design/pixel-art-demo.mp4' type='video/mp4'></video>" },
+
+                ],
+                windowsApp: "LibreSprite, Krita",
+                websiteApp: "Piskel, Photopea",
+                appleOSApp: "Pixaki 4 Intro",
+                androidApp: "Resprite, Krita"
+            },
+           
+            // ANIMATION ============================================================
+            {
+                title: "Stop Motion Animation",
+                section: "Animation",
+                thumbnail: "./media/animation/stopmotion-demo.png",
+                description: "Animate everyday objects by snapping photos.",
+                skills: ["Photography", "Animation"],
+                hardware: [["Phone / Tablet"], ["PC", "Camera"], "Tripod",],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/animation/stopmotion-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Stop Motion Studio",
+                websiteApp: "Cloud Stop Motion",
+                appleOSApp: "Stop Motion Studio",
+                androidApp: "Stop Motion Studio"
+            },
+            {
+                title: "Tradditional Animation",
+                section: "Animation",
+                thumbnail: "./media/animation/frame-by-frame-lightbox.png",
+                description: "Draw frame-by-frame animated scenes.",
+                skills: ["Animation", "Illustration"],
+                hardware: [["Pencil", "Paper", "Lightbox"], ["Tablet", "Stylus"], ["PC", "Pen Display"]],
+                media: [
+                    { thumb: "./media/animation/frame-by-frame-lightbox.png", content: "<video muted autoplay controls><source src='./media/animation/frame-by-frame-lightbox.mp4' type='video/mp4'></video>" },
+                    { thumb: "./media/animation/frame-by-frame-flash-demo.png", content: "<video muted autoplay controls><source src='./media/animation/frame-by-frame-flash-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Krita, Pencil2D",
+                websiteApp: "Wick Editor",
+                appleOSApp: "FlipaClip",
+                androidApp: "FlipaClip, Krita"
+            },
+            {
+                title: "Digital Puppet Animation",
+                section: "Animation",
+                thumbnail: "./media/animation/2d-rigging-demo.png",
+                description: "Animate by posing digital characters.",
+                skills: ["Animation", "2D Rigging/Puppetry"],
+                hardware: [["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/animation/2d-rigging-demo.png", content: "<video muted autoplay controls><source src='./media/animation/2d-rigging-demo.mp4' type='video/mp4'></video>" },
+                    { thumb: "./media/animation/2d-rigging-set.png", content: "<video muted autoplay controls><source src='./media/animation/2d-rigging-set.mp4' type='video/mp4'></video>" },
+
+                ],
+                windowsApp: "Synfig, Tahoma2D",
+                websiteApp: "Wick Editor",
+                appleOSApp: "Vector Motion", // Toon Squid is $9
+                androidApp: "Draw Cartoons 2"
+            },
+            /*{
+                title: "Motion Capture",
+                section: "Animation",
+                thumbnail: "./media/animation/motion-capture-2d-demo.png",
+                description: "Animate using body and facial movement.",
+                skills: ["Animation", "3D Models"],
+                hardware: [["Phone"], ["PC", "Webcam"], ["PC", "Xbox Kinect"],],
+                media: [
+                    { thumb: "./media/animation/motion-capture-2d-demo.png", content: "<video muted autoplay controls><source src='./media/animation/motion-capture-2d-demo.mp4' type='video/mp4'></video>" },
+                    { thumb: "./media/animation/motion-capture-3d-test.png", content: "<video muted autoplay controls><source src='./media/animation/motion-capture-3d-test.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Kinect For Windows SDK",
+                websiteApp: "TBA",
+                appleOSApp: "TBA",
+                androidApp: "TBA"
+            },*/
+
+            // FILM & PHOTOGRAPHY ====================================================
+            {
+                title: "Photography",
+                section: "Film & Photography",
+                thumbnail: "./media/film-photography/photo-canon-dslr.jpg",
+                description: "Capture and edit digital photos.",
+                skills: ["Photography"],
+                hardware: [["Phone / Tablet"], ["PC", "Camera"], "Tripod",],
+                media: [
+                    { thumb: "./media/film-photography/photo-flower.jpg", content: "<img src='./media/film-photography/photo-flower.jpg'>" },
+                    { thumb: "./media/film-photography/photo-architecture.png", content: "<img src='./media/film-photography/photo-architecture.png'>" },
+                    { thumb: "./media/film-photography/photo-canon-dslr.jpg", content: "<img src='./media/film-photography/photo-canon-dslr.jpg'>" },
+                ],
+                windowsApp: "Affinity, RawTherapee",
+                websiteApp: "Pixlr",
+                appleOSApp: "Snapseed",
+                androidApp: "Snapseed"
+            },
+            {
+                title: "Video Editing",
+                section: "Film & Photography",
+                thumbnail: "./media/film-photography/film-video-editing.png",
+                description: "Record and edit video.",
+                skills: ["Cinematography", "Video Editing"],
+                hardware: [["Phone / Tablet"], ["PC", "Camera"], "Tripod",],
+                media: [
+                    { thumb: "./media/empty.png", content: "<img src='./media/film-photography/film-video-editing.png'>" },
+                ],
+                windowsApp: "DaVinci Resolve, OpenShot",
+                websiteApp: "Clipchamp",
+                appleOSApp: "iMovie",
+                androidApp: "KineMaster"
+            },
+            {
+                title: "Green Screen VFX",
+                section: "Film & Photography",
+                thumbnail: "./media/film-photography/green-screen-setup.jpg",
+                description: "Replace green or blue backdrops in videos with different scenery.",
+                skills: ["Filming", "Video Editing", "Acting"],
+                hardware: [["Phone / Tablet"], ["PC", "Camera"], "Tripod",],
+                media: [
+                    { thumb: "./media/film-photography/green-screen-setup.jpg", content: "<img src='./media/film-photography/green-screen-setup.jpg'>" },
+                    { thumb: "./media/film-photography/green-screen-demo.png", content: "<video muted autoplay controls><source src='./media/film-photography/green-screen-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "DaVinci Resolve",
+                websiteApp: "CapCut",
+                appleOSApp: "iMovie",
+                androidApp: "KineMaster"
+            },
+           
+            // INTERACTIVE ============================================================
+            {
+                title: "Website Development",
+                section: "Interactive",
+                thumbnail: "./media/interactive/website-creation-demo.png",
+                description: "Create a website to share with friends and family.",
+                skills: ["Web Design", "Coding"],
+                hardware: [["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/interactive/website-creation-demo.mp4' type='video/mp4'></video>" },
+
+                ],
+                windowsApp: "HTML, CSS, Phoenix Code",
+                websiteApp: "Google Sites, Phoenix Code",
+                appleOSApp: "Google Sites", 
+                androidApp: "Google Sites"
+            },
+            {
+                title: "Social Game Dev",
+                section: "Interactive",
+                thumbnail: "./media/interactive/game-platformer.png",
+                description: "Create interactive experiences for everyone to join.",
+                skills: ["Coding", "Grids & Math", "Pixel Art", "Level Design", "Shared Play"],
+                hardware: [["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/interactive/game-3D-retro-fps-development.png", content: "<video muted autoplay controls><source src='./media/interactive/game-3D-retro-fps-development.mp4' type='video/mp4'></video>" },
+                    { thumb: "./media/interactive/game-platformer.png", content: "<div class='fluidMedia16x9'><iframe src='./media/interactive/platformer-demo/index.html' width='100%' height='100%' style='border:0;'></iframe></div>" },
+
+                ],
+                windowsApp: "Scratch, Godot",
+                websiteApp: "Scratch, Godot",
+                appleOSApp: "Scratch, GDevelop",
+                androidApp: "Scratch, Godot"
+            },
+            {
+                title: "Interactive Stories",
+                section: "Interactive",
+                thumbnail: "./media/interactive/writing-twine-demo.png",
+                description: "Create text based interactive adventures.",
+                skills: ["Writing", "Coding"],
+                hardware: [["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/interactive/writing-twine-demo.png", content: "<video muted autoplay controls><source src='./media/interactive/writing-twine-demo.mp4' type='video/mp4'></video>" },
+                    { thumb: "./media/interactive/writing-twine-editor.png", content: "<img src='./media/interactive/writing-twine-editor.png'>" },
+                ],
+                windowsApp: "Twine",
+                websiteApp: "Twine",
+                appleOSApp: "TBA", 
+                androidApp: "TBA"
+            },
+            
+            // EXTENDED REALITY ====================================================
+            {
+                title: "Augmented Reality (AR)",
+                section: "Extended Reality",
+                thumbnail: "./media/extended-reality/ar-demo.png",
+                description: "Augment reality with added digital objects and more.",
+                skills: ["3D Models", "Augmented Photography"],
+                hardware: [["Phone"], ["Tablet"]],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video video muted autoplay controls><source src='./media/extended-reality/ar-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Godot",
+                websiteApp: "MyWebAR",
+                appleOSApp: "Adobe Aero",
+                androidApp: "Assemblr Studio"
+            },
+            {
+                title: "Virtual Reality (VR)",
+                section: "Extended Reality",
+                thumbnail: "./media/extended-reality/vr-demo.png",
+                description: "Create or experience virtual worlds and 360 content.",
+                skills: ["360 Photography", "3D Models"],
+                hardware: [["Phone", "Google Cardboard"], ["VR Headset"], "360 Camera (optional)"],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/extended-reality/vr-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Godot",
+                websiteApp: "Frame VR",
+                appleOSApp: "VR Creator",
+                androidApp: "Godot"
+            },
+            {
+                title: "Projection Mapping",
+                section: "Extended Reality",
+                thumbnail: "./media/extended-reality/projection-mapping-demo.png",
+                description: "Project animated digital content on real world objects.",
+                skills: ["Projection", "Digital Decorations"],
+                hardware: [["Phone / Tablet"], ["PC"], "Projector"],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/extended-reality/projection-mapping-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "DaVinci Resolve, Calvary",
+                websiteApp: "TBA",
+                appleOSApp: "TBA",
+                androidApp: "TBA"
+            },
+            
+            // 3D =====================================================================
+            {
+                title: "3D Sculpting",
+                section: "3D",
+                thumbnail: "./media/3d/3d-Sculpt-demo.png",
+                description: "Sculpt digitally and paint over your creations with colour.",
+                skills: ["3D Modelling", "Texture Painting"],
+                hardware: [["Tablet", "Stylus"], ["PC", "Pen Display"]],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/3d/3d-sculpt-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Blender",
+                websiteApp: "Sculpt GL",
+                appleOSApp: "Sculpt It",
+                androidApp: "Nomad Sculpt (Trial)" // Nomad Sculpt , Sculpt+ 
+            },
+            {
+                title: "3D Printing",
+                section: "3D",
+                thumbnail: "./media/3d/3d-printing-demo.png",
+                description: "Print 3D models and learn the basics of 3D modelling.",
+                skills: ["3D Modelling", "Measurement"],
+                hardware: [["Tablet"], ["PC"]],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/3d/3d-printing-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Blender, Orca Slicer",
+                websiteApp: "Tinkercad, Kiri Moto",
+                appleOSApp: "Tinkercad",
+                androidApp: "Tinkercad"
+            },
+            {
+                title: "3D Scanning", // or Photogrammetry
+                section: "3D",
+                thumbnail: "./media/3d/3d-scan-demo.png",
+                description: "Scan objects and use them as 3D models in other projects.",
+                skills: ["Photography", "3D Models"],
+                hardware: [["Phone / Tablet"], ["PC", "Camera"],],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/3d/3d-scan-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "Meshroom",
+                websiteApp: "KIRI Engine",
+                appleOSApp: "KIRI Engine", // Polycam Trial Version
+                androidApp: "KIRI Engine"  // Polycam Trial Version
+            },
+           
+            // AUDIO ============================================================
+            /*{
+                title: "Midi Music Production",
+                section: "Audio",
+                thumbnail: "./media/extended-reality/projection-mapping-demo.png",
+                description: "Produce editable music.",
+                skills: ["Projection", "Digital Decorations"],
+                hardware: [["Tablet"], ["PC"], "Midi Keyboard"],
+                media: [
+                    { thumb: "./media/empty.png", content: "<video muted autoplay controls><source src='./media/extended-reality/projection-mapping-demo.mp4' type='video/mp4'></video>" },
+                ],
+                windowsApp: "LMMS, Reaper",
+                websiteApp: "TBA",
+                appleOSApp: "GarageBand",
+                androidApp: "N Track"
+            },*/
+        ];
+
+        var current = null;
+
+        function renderHome() {
+            current = null;
+
+            // Define section types from the available sections in the JSON data.
+            var sections = {};
+            for (var i = 0; i < DATA.length; i++) {
+                var item = DATA[i];
+                if (!sections[item.section]) sections[item.section] = [];
+                sections[item.section].push(item);
+            }
+
+            // Create app cards
+            var appHTML = "";
+
+            for (var key in sections) {
+                appHTML += "<div class='section'>";
+                appHTML += "<h2>" + key + "</h2>";
+                appHTML += "<div class='grid'>";
+
+                for (var j = 0; j < sections[key].length; j++) {
+                    var item = sections[key][j];
+                    appHTML += "<div class='card' onclick=\"openApp('" + item.title + "')\">";
+                    appHTML += "<img src='" + (item.thumbnail || "") + "'>";
+                    appHTML += "<h3>" + item.title + "</h3>";
+                    appHTML += "</div>";
+                }
+
+                appHTML += "</div></div>";
+            }
+
+            appArea.innerHTML = appHTML;
+        }
+
+        // OPEN PAGE RELATED ======================================
+
+        var appArea = document.getElementById("appArea");
+        var pageTitle = document.getElementById("pageTitle");
+        var pageDescription = document.getElementById("pageDescription");
+        var pageSkills = document.getElementById("pageSkills");
+        var pageHardware = document.getElementById("pageHardware");
+        var pageThumbnails = document.getElementById("pageThumbnails");
+
+        // Apps Area
+        var windowsApp = document.getElementById("pageWindowsApp");
+        var websiteApp = document.getElementById("pageWebsiteApp");
+        var appleOSApp = document.getElementById("pageAppleOSApp");
+        var androidApp = document.getElementById("pageAndroidApp");
+
+        function setMedia(i) {
+
+            if (!current || !current.media) return;
+
+            var el = document.getElementById("pageMedia");
+            el.classList.add("fade");
+            var speed = getComputedStyle(document.documentElement).getPropertyValue("--media-transition-speed");
+            speed = parseFloat(speed);
+
+            setTimeout(function () {
+                el.innerHTML = current.media[i].content;
+                el.classList.remove("fade");
+            }, speed);
+        }
+
+        function openApp(title) {
+
+            document.getElementById("appPage").classList.toggle("show");
+
+            var item = null;
+            for (var i = 0; i < DATA.length; i++) {
+                if (DATA[i].title === title) { item = DATA[i]; break; }
+            }
+            if (!item) return;
+
+            current = item;
+            pageTitle.innerText = item.title;
+            pageDescription.innerText = item.description;
+
+            windowsApp.innerText = item.windowsApp;
+            websiteApp.innerText = item.websiteApp;
+            appleOSApp.innerText = item.appleOSApp;
+            androidApp.innerText = item.androidApp;
+
+            // Skills area
+            var skillsHTML = "";
+            if (item.skills && item.skills.length) {
+                for (var s = 0; s < item.skills.length; s++) {
+                    skillsHTML += "<span class='tag'>" + item.skills[s] + "</span>";
+                }
+            }
+            pageSkills.innerHTML = skillsHTML;
+
+            // Hardware area 
+            var hardwareHTML = "";
+
+            if (item.hardware && item.hardware.length) {
+
+                var firstGroupFound = false;
+
+                for (var h = 0; h < item.hardware.length; h++) {
+                    var block = item.hardware[h];
+
+                    /* OR GROUPS */
+                    if (Object.prototype.toString.call(block) === "[object Array]") {
+                        if (firstGroupFound) {
+                            hardwareHTML += "<div class='tag-alt'>OR</div>";
+                        }
+
+                        firstGroupFound = true;
+
+                        hardwareHTML += "<div style='margin-bottom:10px;'>";
+
+                        for (var i = 0; i < block.length; i++) {
+                            hardwareHTML += "<span class='tag'>" + block[i] + "</span>";
+
+                            if (i < block.length - 1) {
+                                hardwareHTML += " + ";
+                            }
+                        }
+
+                        hardwareHTML += "</div>";
+
+                    }
+
+                    // Regular items 
+                    else {
+
+                        hardwareHTML += "<div style='margin-bottom:10px;'>";
+                        hardwareHTML += "<span class='tag'>" + block + "</span>";
+                        hardwareHTML += "</div>";
+
+                    }
+
+                }
+
+            }
+
+            pageHardware.innerHTML = hardwareHTML;
+
+            // Showcase area
+
+            pageMedia.innerHTML = "";
+            pageThumbnails.innerHTML = "";
+
+            if (item.media && item.media.length) {
+
+                pageMedia.innerHTML = item.media[0].content;
+
+                var thumbHTML = "";
+
+                for (var j = 0; j < item.media.length; j++) {
+                    thumbHTML += "<div onclick='setMedia(" + j + ")'>";
+                    thumbHTML += "<img src='" + item.media[j].thumb + "'>";
+                    thumbHTML += "</div>";
+                }
+
+                pageThumbnails.innerHTML = thumbHTML;
+            }
+
+        }
+
+        function closeAppPage() {
+            document.getElementById("appPage").classList.toggle("show");
+        }
+
+        renderHome();
+
+        //openApp("Digital Painting"); // For Testing
+    </script>
+</body>
+</html>
